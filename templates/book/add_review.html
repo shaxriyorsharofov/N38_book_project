@@ -1,0 +1,6 @@
+<h1>{{ books.title }}</h1>
+<form method="post" >
+    {% csrf_token %}
+    {{ add_review_form.as_p }}
+    <input type="submit" value="Add Review">
+</form>

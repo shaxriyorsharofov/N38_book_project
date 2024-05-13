@@ -1,0 +1,20 @@
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ book.title }}</title>
+</head>
+<body>
+<h1>Name: {{ book.title }}</h1>
+<img src="{{ book.image.url }}" height="200px"> <br><br>
+<h4>Description: {{ book.description }}</h4>
+<h4>Price: {{ book.price }}</h4>
+<h4>Pages: {{ book.page }}</h4>
+</body>
+<a href="{% url 'products:book-delete' book.pk %}" >Delete</a>
+<h2>Reviews</h2>
+<a href="{% url 'products:add-review' book.pk %}" >Add Review</a>
+{% for review in reviews %}
+    <h4>{{ review.user.username }} | {{ review.star_given }}</h4>
+    <p>{{ review.comment }}</p><hr>
+{% endfor %}
+
