@@ -1,3 +1,5 @@
+from django.contrib import messages
+
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 from django.shortcuts import render, redirect
 from django.views import View
@@ -23,10 +25,11 @@ class BookDetailView(View):
     def get(self, request, pk):
         book = Books.objects.get(pk=pk)
         reviews = Review.objects.filter(book=pk)
-        print(reviews)
+        category_books = Books.objects.filter(category=book.category.pk)
         context = {
             'book': book,
-            'reviews': reviews
+            'reviews': reviews,
+            'category_books': category_books
         }
         return render(request, 'book/book_detail.html', context=context)
 
@@ -67,7 +70,11 @@ class AddReviewView(LoginRequiredMixin, View):
             )
 
             review.save()
+            messages.success(request, "Review added successfully.")
             return redirect('products:book-detail', pk=pk)
+        else:
+            messages.error(request, "Failed to add review. Please check the form.")
+            return render(request, 'book/add_review.html', {'books': books, 'add_review_form': add_review_form})
 
 
 

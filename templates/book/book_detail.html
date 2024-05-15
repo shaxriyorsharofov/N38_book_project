@@ -1,8 +1,10 @@
+{% extends 'base.html'%}
 
 <head>
     <meta charset="UTF-8">
-    <title>{{ book.title }}</title>
+    <title>{% block title %} {{ book.title }}{% endblock %}</title>
 </head>
+{% block content %}
 <body>
 <h1>Name: {{ book.title }}</h1>
 <img src="{{ book.image.url }}" height="200px"> <br><br>
@@ -17,4 +19,18 @@
     <h4>{{ review.user.username }} | {{ review.star_given }}</h4>
     <p>{{ review.comment }}</p><hr>
 {% endfor %}
+
+
+<hr><hr>
+
+{% for book in category_books %}
+    <div style="display:flex">
+            <img src="{{ book.image.url }}" height="80px">
+
+            {{ book.title }}
+
+    </div>
+{% endfor %}
+
+{% endblock content%}
 
