@@ -17,7 +17,12 @@
 <a href="{% url 'products:add-review' book.pk %}" >Add Review</a>
 {% for review in reviews %}
     <h4>{{ review.user.username }} | {{ review.star_given }}</h4>
+     {% if request.user == review.user %}
+        <a href="{% url 'products:edit-review' review.pk %}" >Update</a>
+        <a href="#" >Delete</a>
+    {% endif %}
     <p>{{ review.comment }}</p><hr>
+
 {% endfor %}
 
 

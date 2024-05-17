@@ -1,12 +1,11 @@
 from django.contrib import messages
-
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
-
-from .forms import AddReviewForm
-from .models import Books, Review
+from django.http import HttpResponse
+from .forms import AddReviewForm, ReviewUpdateForm
+from .models import Books, Review, CategoryBooks
 from django.urls import reverse_lazy
 # Create your views here.
 
@@ -75,6 +74,43 @@ class AddReviewView(LoginRequiredMixin, View):
         else:
             messages.error(request, "Failed to add review. Please check the form.")
             return render(request, 'book/add_review.html', {'books': books, 'add_review_form': add_review_form})
+
+
+class ReviewUpdateView(View):
+    def get(self, request, pk):
+        review = Review.objects.get(pk=pk)
+        update_review_form = ReviewUpdateForm(instance=review)
+        context = {
+            'update_review_form': update_review_form
+        }
+        return render(request, 'book/review_update.html', context=context)
+
+    def post(self, request, pk):
+        review = Review.objects.get(pk=pk)
+        update_review_form = ReviewUpdateForm(request.POST, instance=review)
+        if update_review_form.is_valid():
+            # Set the book_id before saving
+            update_review = update_review_form.save(commit=False)
+            update_review.book_id = review.book_id
+            update_review.save()
+            return redirect('products:book-detail', pk=review.book_id)
+        else:
+            return render(request, 'book/review_update.html', {'update_review_form': update_review_form})
+
+
+
+class CategoriesListView(View):
+    def get(self, request):
+        category = CategoryBooks.objects.all()
+
+        return render(request, 'book/products.html', {'categorys': category})
+
+
+
+
+
+
+
 
 
 
